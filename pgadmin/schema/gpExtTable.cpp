@@ -128,10 +128,10 @@ wxString gpExtTable::GetSql(ctlTree *browser)
 		sql = wxT("-- External Table: ") + GetQuotedFullIdentifier() + wxT("\n\n")
 		      + wxT("-- DROP EXTERNAL TABLE ") + GetQuotedFullIdentifier() + wxT(";\n\n");
 		/* Now get required information from pg_exttable */
-		if (GetDatabase()->BackendMinimumVersion(8, 2, 5))
+		if (GetDatabase()->BackendMinimumVersion(8, 3))
 		{
 			q += wxT(
-			         "SELECT x.location, x.fmttype, x.fmtopts, x.command, ")
+			         "SELECT coalesce(x.urilocation,x.execlocation), x.fmttype, x.fmtopts, x.command, ")
 			     wxT("x.rejectlimit, x.rejectlimittype,")
 			     wxT("(SELECT relname ")
 			     wxT("FROM pg_class ")

@@ -145,16 +145,8 @@ dbgTargetInfo::dbgTargetInfo(Oid _target, pgConn *_conn)
 		if(!_conn->BackendMinimumVersion(8, 4))
 		{
 			targetQuery +=
-			    wxT("	pg_catalog.array_to_string(ARRAY(\n")
-			    wxT("	SELECT\n")
-			    wxT("		CASE WHEN p.proargdefvals[x.j] != '-' THEN\n")
-			    wxT("			pg_catalog.pg_get_expr(p.proargdefvals[x.j], 'pg_catalog.pg_class'::regclass, true)\n")
-			    wxT("		ELSE '-' END\n")
-			    wxT("	FROM\n")
-			    wxT("		pg_catalog.generate_series(1, pg_catalog.array_upper(p.proargdefvals, 1)) AS x(j)\n")
-			    wxT("	), ',') AS proargdefaults,\n")
-			    wxT("	CASE WHEN p.proargdefvals IS NULL THEN '0'\n")
-			    wxT("		ELSE pg_catalog.array_upper(p.proargdefvals, 1)::text END AS pronargdefaults\n");
+			    wxT("	pg_catalog.pg_get_expr(p.proargdefaults, 'pg_catalog.pg_class'::regclass, false) AS proargdefaults,\n")
+			    wxT("	p.pronargdefaults\n");
 		}
 		else
 		{

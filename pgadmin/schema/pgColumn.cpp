@@ -311,7 +311,7 @@ wxString pgColumn::GetDefinition()
 	wxString sql = wxEmptyString;
 	wxString seqDefault1, seqDefault2;
 
-	if (table->GetOfTypeOid() == 0)
+	//if (table->GetOfTypeOid() == 0)
 		sql += GetQuotedTypename();
 
 	if (!GetCollation().IsEmpty() && GetCollation() != wxT("pg_catalog.\"default\""))

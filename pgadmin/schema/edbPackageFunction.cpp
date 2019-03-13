@@ -279,7 +279,7 @@ edbPackageFunction *edbPackageFunctionFactory::AppendFunctions(pgObject *obj, ed
 		}
 		else
 		{
-			argDefsCol = wxT("proargdefvals AS argdefaults, COALESCE(substring(array_dims(proargdefvals), E'1:(.*)\\]')::integer, 0) AS pronargdefaults, ");
+			argDefsCol = wxT("pg_get_expr(proargdefaults, 'pg_catalog.pg_class'::regclass) AS argdefaults, pronargdefaults, ");
 		}
 	}
 
@@ -435,7 +435,7 @@ edbPackageFunction *edbPackageFunctionFactory::AppendFunctions(pgObject *obj, ed
 							if (!argDefValArray.IsEmpty() && inModeCnt <= argDefValArray.GetCount())
 							{
 								def = argDefValArray[currINindex++];
-
+/**
 								if (!def.IsEmpty() && def != wxT("-"))
 								{
 									// Only EDB 8.3 does not support get the
@@ -460,6 +460,7 @@ edbPackageFunction *edbPackageFunctionFactory::AppendFunctions(pgObject *obj, ed
 								{
 									def = wxEmptyString;
 								}
+**/
 							}
 							inModeCnt--;
 						}

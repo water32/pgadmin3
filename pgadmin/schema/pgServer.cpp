@@ -819,16 +819,22 @@ int pgServer::Connect(frmMain *form, bool askPassword, const wxString &pwd, bool
 		dbOid = conn->GetDbOid();
 
 		// Check the server version
-		if (!(conn->BackendMinimumVersion(SERVER_MIN_VERSION_N >> 8, SERVER_MIN_VERSION_N & 0x00FF)) ||
-		        (conn->BackendMinimumVersion(SERVER_MAX_VERSION_N >> 8, (SERVER_MAX_VERSION_N & 0x00FF) + 1)))
-		{
-			wxLogWarning(_("The server you are connecting to is not a version that is supported by this release of %s.\n\n%s may not function as expected.\n\nSupported server versions are %s to %s."),
-			             appearanceFactory->GetLongAppName().c_str(),
-			             appearanceFactory->GetLongAppName().c_str(),
-			             wxString(SERVER_MIN_VERSION_T).c_str(),
-			             wxString(SERVER_MAX_VERSION_T).c_str());
+		//if (!(conn->BackendMinimumVersion(SERVER_MIN_VERSION_N >> 8, SERVER_MIN_VERSION_N & 0x00FF)) ||
+		//        (conn->BackendMinimumVersion(SERVER_MAX_VERSION_N >> 8, (SERVER_MAX_VERSION_N & 0x00FF) + 1)))
+		//{
+			//wxLogWarning(_("The server you are connecting to is not a version that is supported by this release of %s.\n\n%s may not function as expected.\n\nSupported server versions are %s to %s."),
+			//             appearanceFactory->GetLongAppName().c_str(),
+			//             appearanceFactory->GetLongAppName().c_str(),
+			//             wxString(SERVER_MIN_VERSION_T).c_str(),
+			//             wxString(SERVER_MAX_VERSION_T).c_str());
+		//}
+		wxString pgVersion = wxString(conn->GetVersionString());
+		bool isGP4or5 = pgVersion.Matches(wxT("*Greenplum Database 4.*")) || pgVersion.Matches(wxT("*Greenplum Database 5.*"));
+		if(!isGP4or5){
+			wxLogMessage(_("该版本仅支持Greenplum 4和5版本"));
+		}else{
+			wxLogMessage(_("          该版本由陈淼修改           \n\n            18616691889                \n        miaochen@mail.ustc.edu.cn        \n\n     仅用于支持Greenplum 4和5版本     "));
 		}
-
 		connected = true;
 		bool hasUptime = false;
 

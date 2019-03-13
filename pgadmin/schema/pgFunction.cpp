@@ -631,15 +631,24 @@ pgFunction *pgFunctionFactory::AppendFunctions(pgObject *obj, pgSchema *schema, 
 {
 	// Caches
 	cacheMap typeCache, exprCache;
-
+	wxString issuper  = obj->GetConnection()->ExecuteScalar(wxT("select case when rolsuper then 'TRUE' else 'FALSE' end issuper from pg_roles where rolname = current_user"));
+	wxString supertrue = wxT("TRUE");
 	pgFunction *function = 0;
 	wxString argNamesCol, argDefsCol, proConfigCol, proType, seclab;
 	if (obj->GetConnection()->BackendMinimumVersion(8, 0))
 		argNamesCol = wxT("proargnames, ");
-	if (obj->GetConnection()->HasFeature(FEATURE_FUNCTION_DEFAULTS) && !obj->GetConnection()->BackendMinimumVersion(8, 4))
-		argDefsCol = wxT("proargdefvals, COALESCE(substring(array_dims(proargdefvals), E'1:(.*)\\]')::integer, 0) AS pronargdefaults, ");
-	if (obj->GetConnection()->BackendMinimumVersion(8, 4))
+	if (obj->GetConnection()->HasFeature(FEATURE_FUNCTION_DEFAULTS) && !obj->GetConnection()->BackendMinimumVersion(8, 4)){
 		argDefsCol = wxT("pg_get_expr(proargdefaults, 'pg_catalog.pg_class'::regclass) AS proargdefaultvals, pronargdefaults, ");
+		if(issuper != supertrue){
+			argDefsCol = wxT("case when proargdefaults is null then null else trim(',' from repeat('/**NOSUPERUSER BUG*/,',pronargdefaults)) end AS proargdefaultvals, ");
+		}
+	}
+	if (obj->GetConnection()->BackendMinimumVersion(8, 4)){
+		argDefsCol = wxT("pg_get_expr(proargdefaults, 'pg_catalog.pg_class'::regclass) AS proargdefaultvals, pronargdefaults, ");
+			if(issuper != supertrue){
+			argDefsCol = wxT("case when proargdefaults is null then null else trim(',' from repeat('/**NOSUPERUSER BUG*/,',pronargdefaults)) end AS proargdefaultvals, ");
+		}
+	}
 	if (obj->GetConnection()->BackendMinimumVersion(8, 3))
 		proConfigCol = wxT("proconfig, ");
 	if (obj->GetConnection()->EdbMinimumVersion(8, 1))
@@ -743,11 +752,13 @@ pgFunction *pgFunctionFactory::AppendFunctions(pgObject *obj, pgSchema *schema, 
 			if (obj->GetConnection()->HasFeature(FEATURE_FUNCTION_DEFAULTS) &&
 			        !obj->GetConnection()->BackendMinimumVersion(8, 4))
 			{
-				tmp = functions->GetVal(wxT("proargdefvals"));
-				if (!tmp.IsEmpty())
-					getArrayFromCommaSeparatedList(tmp.Mid(1, tmp.Length() - 2), argDefValArray);
+				tmp = functions->GetVal(wxT("proargdefaultvals"));
+				getArrayFromCommaSeparatedList(tmp, argDefValArray);
 
 				function->iSetArgDefValCount(functions->GetLong(wxT("pronargdefaults")));
+
+				// Check if it is a window function
+				//function->iSetIsWindow(functions->GetBool(wxT("proiswindow")));
 			}
 
 			if (obj->GetConnection()->BackendMinimumVersion(8, 4))
@@ -758,7 +769,7 @@ pgFunction *pgFunctionFactory::AppendFunctions(pgObject *obj, pgSchema *schema, 
 				function->iSetArgDefValCount(functions->GetLong(wxT("pronargdefaults")));
 
 				// Check if it is a window function
-				function->iSetIsWindow(functions->GetBool(wxT("proiswindow")));
+				//function->iSetIsWindow(functions->GetBool(wxT("proiswindow")));
 			}
 			else
 				function->iSetIsWindow(false);
@@ -872,7 +883,7 @@ pgFunction *pgFunctionFactory::AppendFunctions(pgObject *obj, pgSchema *schema, 
 					if (!argDefValArray.IsEmpty() && nArgsIN <= argDefValArray.GetCount())
 					{
 						def = argDefValArray[currINindex++];
-
+/**
 						if (!def.IsEmpty() && def != wxT("-"))
 						{
 							// Only EDB 8.3 does not support get the default value
@@ -893,9 +904,11 @@ pgFunction *pgFunctionFactory::AppendFunctions(pgObject *obj, pgSchema *schema, 
 							}
 						}
 						else
+
 						{
 							def = wxEmptyString;
 						}
+**/
 					}
 					nArgsIN--;
 				}

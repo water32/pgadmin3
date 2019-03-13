@@ -554,7 +554,7 @@ bool pgConn::HasFeature(int featureNo, bool forceCheck)
 		wxString defCol = wxT("'proargdefaults'");
 
 		if (EdbMinimumVersion(8, 3) && !EdbMinimumVersion(8, 4))
-			defCol = wxT("'proargdefvals'");
+			defCol = wxT("'proargdefaults'");
 
 		wxString hasFuncDefs = ExecuteScalar(wxT("SELECT count(*) FROM pg_attribute WHERE attrelid = 'pg_catalog.pg_proc'::regclass AND attname = ") + defCol);
 		if (hasFuncDefs == wxT("1"))
