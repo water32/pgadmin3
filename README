@@ -37,6 +37,9 @@ non-programmers. Please see http://www.pgadmin.org/translation/ for
 further details.
 
 
+
+以下为编译环境说明:
+
 *************************************************************************************************
 pgadmin3的最新版本在这套环境下编译有问题，因为后面的版本被EnterpriseDB改了太多的内容，
 不仅编译有问题，兼容代码也有很多问题，目前建议在1.18.1版本下编译修改BUG
