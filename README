@@ -35,3 +35,140 @@ Translation
 Translation into your preferred language is easily possible even for 
 non-programmers. Please see http://www.pgadmin.org/translation/ for 
 further details.
+
+
+*************************************************************************************************
+pgadmin3的最新版本在这套环境下编译有问题，因为后面的版本被EnterpriseDB改了太多的内容，
+不仅编译有问题，兼容代码也有很多问题，目前建议在1.18.1版本下编译修改BUG
+*************************************************************************************************
+版本信息:
+pgadmin3-1.18.1.tar.gz
+https://ftp.postgresql.org/pub/pgadmin/pgadmin3/v1.8.1/src/pgadmin3-1.8.1.tar.gz
+VS2008专业版.iso
+visual2010zp.zip
+postgresql-9.1.24-1-windows-binaries.zip
+https://get.enterprisedb.com/postgresql/postgresql-9.1.24-1-windows-x64-binaries.zip
+wxWidgets-2.8.12.zip
+https://github.com/wxWidgets/wxWidgets/releases/download/v2.8.12/wxWidgets-2.8.12.tar.gz
+libxml2-2.7.8.win32.zip
+http://xmlsoft.org/sources/win32/libxml2-2.7.8.win32.zip
+iconv-1.9.2.win32.zip
+http://xmlsoft.org/sources/win32/iconv-1.9.2.win32.zip
+libxslt-1.1.26.win32.zip
+http://xmlsoft.org/sources/win32/libxslt-1.1.26.win32.zip
+zlib-1.2.5.win32.zip
+http://xmlsoft.org/sources/win32/zlib-1.2.5.win32.zip
+*************************************************************************************************
+安装windows7x64虚拟机环境:
+	镜像文件：
+	cn_windows_7_ultimate_with_sp1_x64_dvd_618537.iso
+	内存：
+	2GB
+	硬盘：
+	60GB
+	CPU：
+	2颗
+	只安装一个C盘，所有数据均直接保留在C盘目录下
+*************************************************************************************************
+安装VMware Tools工具
+*************************************************************************************************
+安装加压缩工具，用于解压相关压缩包
+*************************************************************************************************
+创建工作目录:
+C:\pgAdminDevelop
+C:\pgAdminDevelop\libs
+C:\pgAdminDevelop\pgadmin3-1.18.1
+*************************************************************************************************
+安装
+VS2008专业版.iso
+和
+visual2010zp.zip
+编译wxWidgets-2.8.12需要用到VS2008，而编译pgAdminIII需要用到VS2010，所以，两个版本都需要安装
+*************************************************************************************************
+将wxWidgets-2.8.12.zip解压到如下目录
+C:\pgAdminDevelop\wxWidgets-2.8.12
+设置系统环境变量
+WXWIN
+为
+C:\pgAdminDevelop\wxWidgets-2.8.12
+将postgresql-9.1.24-1-windows-binaries.zip解压到
+C:\pgAdminDevelop\postgresql-9.1.24
+并将pgsql子目录下内容移动到pgsql同级目录
+设置系统环境变量
+PGDIR
+为
+C:\pgAdminDevelop\postgresql-9.1.24
+将pgadmin3-1.18.1.tar.gz解压到如下目录
+C:\pgAdminDevelop\pgadmin3-1.18.1
+将libxml2-2.7.8.win32.zip、iconv-1.9.2.win32.zip、libxslt-1.1.26.win32.zip、zlib-1.2.5.win32.zip解压到如下目录
+C:\pgAdminDevelop\libs
+该目录下将会有4个子目录：
+iconv-1.9.2.win32
+libxml2-2.7.8.win32
+libxslt-1.1.26.win32
+zlib-1.2.5
+将上述4个子文件夹的版本号去除，仅保留名称：
+iconv
+libxml2
+libxslt
+zlib
+设置系统环境变量
+PGBUILD
+为
+C:\pgAdminDevelop\libs
+*************************************************************************************************
+编译wxWidgets：
+打开：
+开始菜单-》所有程序-》Microsoft Visual Studio 2008-》Visual Studio Tools-》Visual Studio 2008 命令提示
+执行命令:
+---------------------------------------------------------------------------
+Setting environment for using Microsoft Visual Studio 2008 x86 tools.
+
+C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC>cd c:\
+c:\>cd pgAdminDevelop\pgadmin3-1.18.1\xtra\wx-build
+c:\pgAdminDevelop\pgadmin3-1.18.1\xtra\wx-build>build-wxmsw.bat
+..........等待运行结束..........大概可能要等十多分钟
+hhp2cached.cpp
+正在编译资源...
+Microsoft (R) Windows (R) Resource Compiler Version 6.0.5724.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+正在链接...
+正在嵌入清单...
+hhp2cached - 0 个错误，0 个警告
+生成 已启动: 项目: wxrc，配置: Unicode Release|Win32
+正在编译...
+wxrc.cpp
+正在链接...
+正在嵌入清单...
+wxrc - 0 个错误，0 个警告
+"build-wx done."
+
+c:\pgAdminDevelop\pgadmin3-1.18.1\xtra\wx-build>
+关闭
+Visual Studio 2008 命令提示
+窗口
+双击打开
+C:\pgAdminDevelop\pgadmin3-1.18.1\pgAdmin3.sln
+文件
+第一次选择VC++环境
+*************************************************************************************************
+VS2010-》生成-》配置管理器
+将3处Debug改为Release
+
+左侧窗口-》解决方案资源管理器
+鼠标选择解决方案
+pgAdmin3
+右键-》
+生成
+..................几分钟之后..................
+2>LinkEmbedManifest:
+2>  pgAdmin3.vcxproj -> C:\pgAdminDevelop\pgadmin3-1.18.1\pgadmin\.\Release\pgAdmin3.exe
+2>FinalizeBuildStatus:
+2>  正在删除文件“.\Release\pgAdmin3.unsuccessfulbuild”。
+2>  正在对“.\Release\pgAdmin3.lastbuildstate”执行 Touch 任务。
+2>
+2>生成成功。
+2>
+2>已用时间 00:03:08.84
+========== 生成: 成功 2 个，失败 0 个，最新 0 个，跳过 0 个 ==========
+*************************************************************************************************
